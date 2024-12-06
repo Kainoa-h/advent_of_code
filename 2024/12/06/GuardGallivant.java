@@ -86,7 +86,7 @@ public class GuardGallivant {
     }
 
     static void part2() throws Exception {
-        Scanner sc = new Scanner(new File("test.txt"));
+        Scanner sc = new Scanner(new File("data.txt"));
         ArrayList<char[]> map = new ArrayList<>();
         int rowIdx = -1, colIdx = -1;
         int offSetRowIdx = 0, offSetColIdx = 0;
@@ -122,18 +122,20 @@ public class GuardGallivant {
             }
             rowsCount++;
         }
-        map.get(rowIdx)[colIdx] = '.';
 
-        int count = 0;
+        //map.get(rowIdx)[colIdx] = '.';
         int startRowIdx = rowIdx;
         int startColIdx = colIdx;
-        Last2StepsChecker last2Steps = new Last2StepsChecker();
-        int steps = 0;
+        int startOffSetRowIdx = offSetRowIdx;
+        int startOffSetColIdx = offSetColIdx;
+        ArrayList<Integer> pa_pathRowIdx = new ArrayList<>();
+        ArrayList<Integer> pa_pathColIdx = new ArrayList<>();
         while (true) {
-
             char c = map.get(rowIdx)[colIdx];
             if (c == '.') {
-                //map.get(rowIdx)[colIdx] = 'x';
+                map.get(rowIdx)[colIdx] = 'x';
+                pa_pathRowIdx.add(rowIdx);
+                pa_pathColIdx.add(colIdx);
             }
 
             int nextRowIdx = rowIdx + offSetRowIdx;
@@ -148,65 +150,58 @@ public class GuardGallivant {
                 offSetColIdx = temp * -1;
                 nextRowIdx = rowIdx + offSetRowIdx;
                 nextColIdx = colIdx + offSetColIdx;
-                int distanceToLoopingBlock = last2Steps.InsertAndGetDistanceToLoopBlock(steps);
-                steps = 0;
-
-                if (distanceToLoopingBlock != -1) {
-                    int loopBlockRow = nextRowIdx;
-                    int loopBlockCol = nextColIdx;
-                    if (offSetRowIdx == 0)  //moving horizontally
-                        loopBlockCol += offSetColIdx * distanceToLoopingBlock;
-                    else
-                        loopBlockRow += offSetRowIdx * distanceToLoopingBlock;
-
-
-                    if ((loopBlockRow != startRowIdx || loopBlockCol != startColIdx) && (loopBlockRow >= 0 && loopBlockCol >= 0 && loopBlockRow < map.size() && loopBlockCol < rowsCount) && map.get(loopBlockRow)[loopBlockCol] != '#') {
-                        map.get(loopBlockRow)[loopBlockCol] = 'O';
-                        count++;
-                    }
-                }
             }
-            PrintMap(map, rowIdx, colIdx, last2Steps);
-            steps++;
+
             rowIdx = nextRowIdx;
             colIdx = nextColIdx;
         }
-        System.out.println(count);
 
+        int sum = 0;
+        for (int i = 0; i < pa_pathRowIdx.size(); i++) {
+            map.get(pa_pathRowIdx.get(i))[pa_pathColIdx.get(i)] = '#';
+            sum += WalkNSeeIfLoop(map,startRowIdx,startColIdx,startOffSetRowIdx,startOffSetColIdx,rowsCount);
+            map.get(pa_pathRowIdx.get(i))[pa_pathColIdx.get(i)] = 'x';
+        }
+
+        System.out.println(sum);
     }
 
-    static void PrintMap(ArrayList<char[]> map, int r, int c, Last2StepsChecker l2) {
-        char x = map.get(r)[c];
-        map.get(r)[c] = 'x';
+    static int WalkNSeeIfLoop(ArrayList<char[]> map, int rowIdx, int colIdx, int offSetRowIdx, int offSetColIdx, int rowsCount) {
+        HashSet<String> visitedBlockedSqrs = new HashSet<>();
+        while (true) {
+            String enc = "" + rowIdx + colIdx + offSetRowIdx + offSetColIdx;
+            if (visitedBlockedSqrs.contains(enc)) {
+                return 1;
+            }
+
+            int nextRowIdx = rowIdx + offSetRowIdx;
+            int nextColIdx = colIdx + offSetColIdx;
+            if (nextRowIdx < 0 || nextRowIdx >= map.size() || nextColIdx < 0 || nextColIdx >= rowsCount) {
+                return 0;
+            }
+
+            if (map.get(nextRowIdx)[nextColIdx] == '#') {
+                visitedBlockedSqrs.add("" + rowIdx + colIdx + offSetRowIdx + offSetColIdx);
+                int temp = offSetRowIdx;
+                offSetRowIdx = offSetColIdx;
+                offSetColIdx = temp * -1;
+                nextRowIdx = rowIdx + offSetRowIdx;
+                nextColIdx = colIdx + offSetColIdx;
+            }
+
+            rowIdx = nextRowIdx;
+            colIdx = nextColIdx;
+        }
+    }
+
+    static void PrintMap(ArrayList<char[]> map, int r, int c) {
+//        char x = map.get(r)[c];
+//        map.get(r)[c] = 'x';
         System.out.println("\n\n\n\n\n");
         for (char[] arr : map) {
             System.out.println(String.valueOf(arr));
         }
-        map.get(r)[c] = x;
-        System.out.println(l2);
-    }
-
-    private static class Last2StepsChecker {
-        int[] arr;
-
-        public Last2StepsChecker() {
-            arr = new int[]{-1,-1};
-        }
-
-        /**
-         * @return int | -1 when no loop possible, x when loop is possible
-         */
-        public int InsertAndGetDistanceToLoopBlock(int i) {
-            arr[0] = arr[1];
-            arr[1] = i;
-
-            return arr[0];
-        }
-
-        @Override
-        public String toString() {
-            return Arrays.toString(arr);
-        }
+//        map.get(r)[c] = x;
     }
 }
 
