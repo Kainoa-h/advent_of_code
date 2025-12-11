@@ -13,8 +13,8 @@ fn main() raises:
             var other_xy = lines[other_idx].split(",") 
             var other_x = atol(other_xy[0])
             var other_y = atol(other_xy[1])
-            var abs_diff_x = abs(base_x - other_x + 1)
-            var abs_diff_y = abs(base_y - other_y + 1)
+            var abs_diff_x = abs(base_x - other_x) + 1
+            var abs_diff_y = abs(base_y - other_y) + 1
             var area = abs_diff_x * abs_diff_y
             if area > large_area:
               large_x = abs_diff_x
