@@ -1,6 +1,11 @@
 from collections import Set
 
 
+alias DAC_BIT: UInt8 = 1
+alias FFT_BIT: UInt8 = 2
+alias TARGET_MASK: UInt8 = 3
+
+
 fn main() raises:
     with open("real.txt", "r") as f:
         var content = f.read()
@@ -13,34 +18,33 @@ fn main() raises:
             for v in segments[1:]:
                 value.append(String(v))
             forward_pass_map[key] = value^
-        var cache = Dict[String, Int]()
+        var cache = Dict[UInt64, Int]()
         print(dfs(forward_pass_map, cache, 0, "svr"))
 
 
 fn dfs(
     read map: Dict[String, List[String]],
-    mut cache: Dict[String, Int],
+    mut cache: Dict[UInt64, Int],
     read seen: UInt8,
     read search: String,
 ) raises -> Int:
+    var key = (hash(search) << 2) | UInt64(seen)
+    if key in cache:
+        return cache[key]
+
     ref values = map[search]
     if values[0] == "out":
-        return 1 if seen == 3 else 0
+        return 1 if seen == TARGET_MASK else 0
+
     var paths = 0
-
-    var key = search + "_" + String(seen)
-    if key in cache:
-      return cache[key]
-
     for v in values:
         var new_seen: UInt8 = seen
         if v == "fft":
-            new_seen |= 1 << 1
+            new_seen |= FFT_BIT
         elif v == "dac":
-            new_seen |= 1
+            new_seen |= DAC_BIT
 
-        var ps = dfs(map, cache, new_seen, v)
-        paths += ps
+        paths += dfs(map, cache, new_seen, v)
 
     cache[key] = paths
     return paths
