@@ -43,3 +43,4 @@ kgen.trace.json.time-trace
 /2023/.direnv/bin
 /2023/.direnv
 /2023/corporate-ca.pem
+/2023/lib/bin

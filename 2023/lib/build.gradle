@@ -40,3 +40,11 @@ java {
         languageVersion = JavaLanguageVersion.of(25)
     }
 }
+
+tasks.withType(Test).configureEach {
+  testLogging {
+      events "passed", "skipped", "failed"
+      showStandardStreams = true
+  }
+}
+
