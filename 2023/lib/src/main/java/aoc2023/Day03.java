@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 class Day03 {
 
@@ -57,14 +58,14 @@ class Day03 {
     return result;
   }
 
-  static String findGear(String[] lines, int r, int c) {
+  static Optional<String> findGear(String[] lines, int r, int c) {
     var rows = lines.length;
     var cols = lines[0].length();
     if (r < 0 || r >= rows || c < 0 || c >= cols) {
-      return null;
+      return Optional.empty();
     }
     var ch = lines[r].charAt(c);
-    return (ch == '*') ? r + "," + c : null;
+    return (ch == '*') ? Optional.of(r + "," + c) : Optional.empty();
   }
 
   static long part2(String input) {
@@ -81,22 +82,23 @@ class Day03 {
         var ch = lines[r].charAt(c);
         if (Character.isDigit(ch)) {
           if (sb.isEmpty()) {
-            gears.add(findGear(lines, r, c - 1));
-            gears.add(findGear(lines, r - 1, c - 1));
-            gears.add(findGear(lines, r + 1, c - 1));
+            findGear(lines, r, c - 1).ifPresent(gears::add);
+            findGear(lines, r - 1, c - 1).ifPresent(gears::add);
+            findGear(lines, r + 1, c - 1).ifPresent(gears::add);
           }
-          gears.add(findGear(lines, r + 1, c));
-          gears.add(findGear(lines, r - 1, c));
+          findGear(lines, r + 1, c).ifPresent(gears::add);
+          findGear(lines, r - 1, c).ifPresent(gears::add);
           sb.append(ch);
         } else if (!sb.isEmpty()) {
-          gears.add(findGear(lines, r, c));
-          gears.add(findGear(lines, r - 1, c));
-          gears.add(findGear(lines, r + 1, c));
+          findGear(lines, r, c).ifPresent(gears::add);
+          findGear(lines, r - 1, c).ifPresent(gears::add);
+          findGear(lines, r + 1, c).ifPresent(gears::add);
 
           for (String gear : gears) {
             if (gear != null) {
               var list = gearMap.computeIfAbsent(gear, k -> new ArrayList<Integer>());
-              list.add(Integer.parseInt(sb.toString()));
+              var num = Integer.parseInt(sb.toString());
+              list.add(num);
             }
           }
           gears.clear();
@@ -107,7 +109,8 @@ class Day03 {
         for (String gear : gears) {
           if (gear != null) {
             var list = gearMap.computeIfAbsent(gear, k -> new ArrayList<Integer>());
-            list.add(Integer.parseInt(sb.toString()));
+            var num = Integer.parseInt(sb.toString());
+            list.add(num);
           }
         }
       }
