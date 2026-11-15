@@ -26,7 +26,7 @@ class Day04 {
         matches += winNums.get(getNumber(line, i)) ? 1 : 0;
       }
 
-      total += (long) Math.pow(2, matches - 1);
+      total += matches == 0 ? 0 : 1 << (matches - 1);
     }
     return total;
   }
