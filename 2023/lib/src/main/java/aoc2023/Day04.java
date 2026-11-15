@@ -35,10 +35,14 @@ class Day04 {
   static long part2(String input) {
     var lines = input.split("\n");
     long total = 0;
-    int[] copies = new int[lines.length];
-    Arrays.fill(copies, 1);
+    int[] copiesDiffArray = new int[lines.length + 1];
+    int running = 0;
     for (var x = 0; x < lines.length; x++) {
       var line = lines[x];
+      running += copiesDiffArray[x];
+      var copies = 1 + running;
+      total += copies;
+
       int matches = 0;
 
       BitSet winNums = new BitSet(100);
@@ -50,11 +54,11 @@ class Day04 {
       for (int i = winNumEnd + 3; i < line.length(); i += 3) {
         matches += winNums.get(getNumber(line, i)) ? 1 : 0;
       }
-
-      total += copies[x];
-      for (int i = x + 1; i <= x + matches; i++) {
-        copies[i] += copies[x];
-      }
+      
+      var start = x + 1;
+      var end = x + matches +1;
+      copiesDiffArray[start] += copies;
+      copiesDiffArray[end] -= copies;
     }
     return total;
   }
