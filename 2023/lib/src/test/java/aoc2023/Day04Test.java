@@ -31,4 +31,18 @@ class Day04Test {
     String input = TestLoader.loadInput("/day04/real.txt");
     System.out.println(Day04.part1(input));
   }
+
+  @Test
+  void testPart2t1() throws IOException {
+    String input = TestLoader.loadInput("/day04/test1.txt");
+    long output = Day04.part2(input);
+    System.out.println(output);
+    assertEquals(30, output);
+  }
+
+  @Test
+  void part2() throws IOException {
+    String input = TestLoader.loadInput("/day04/real.txt");
+    System.out.println(Day04.part2(input));
+  }
 }
