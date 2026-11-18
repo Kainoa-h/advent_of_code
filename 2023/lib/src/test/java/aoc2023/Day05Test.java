@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -45,5 +46,23 @@ class Day05Test {
   void part1() throws IOException {
     String input = TestLoader.loadInput("/day05/real.txt");
     System.out.println(Day05.part1(input));
+  }
+
+  @Test
+  void seedParser2() {
+    assertEquals(List.of(new Day05.RecordRange(79, 2)),
+        Day05.parseSeedRanges("seeds: 79 2"));
+  }
+
+  @Test
+  void part2t1() throws IOException {
+    String input = TestLoader.loadInput("/day05/test1.txt");
+    assertEquals(46, Day05.part2(input));
+  }
+
+  @Test
+  void part2() throws IOException {
+    String input = TestLoader.loadInput("/day05/real.txt");
+    System.out.println(Day05.part2(input));
   }
 }
