@@ -36,4 +36,16 @@ class Day07Test {
     String input = TestLoader.loadInput("/day07/real.txt");
     System.out.println(Day07.part1(input));
   }
+
+  @Test
+  void part2t1() throws IOException {
+    String input = TestLoader.loadInput("/day07/test1.txt");
+    assertEquals(5905, Day07.part2(input));
+  }
+
+  @Test
+  void part2() throws IOException {
+    String input = TestLoader.loadInput("/day07/real.txt");
+    System.out.println(Day07.part2(input));
+  }
 }
